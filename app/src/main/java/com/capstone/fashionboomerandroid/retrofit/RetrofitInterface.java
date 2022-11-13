@@ -11,7 +11,12 @@ public interface RetrofitInterface {
     @GET("/v11/closets/images/{closet_id}")
     @Streaming
     Call<ResponseBody> downloadImage(
-            @Path("closet_id") int userId);
+            @Path("closet_id") int closetId);
+
+    @GET("/v11/closets/images/nukki/{closet_id}")
+    @Streaming
+    Call<ResponseBody> downloadNukkiImage(
+            @Path("closet_id") int closetId);
 
     @GET("/v11/closets/{closet_id}")
     @Streaming
@@ -20,7 +25,7 @@ public interface RetrofitInterface {
 
     @GET("/v11/closets/members/{member_id}")
     @Streaming
-    Call<ResponseBody> getMemberClosets(
+    Call<DataModel.PageData> getMemberClosets(
             @Path("member_id") int memberId,
             @Query("page") int page,
             @Query("size") int size);

@@ -4,7 +4,33 @@ package com.capstone.fashionboomerandroid.retrofit;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class DataModel {
+    public static class PageData {
+        @SerializedName("data")
+        private List<Closet> data;
+
+        @SerializedName("pageInfo")
+        private PageInfo pageInfo;
+
+        public List<Closet> getData() {
+            return data;
+        }
+
+        public PageInfo getPageInfo() {
+            return pageInfo;
+        }
+
+        public void setData(List<Closet> data) {
+            this.data = data;
+        }
+
+        public void setPageInfo(PageInfo pageInfo) {
+            this.pageInfo = pageInfo;
+        }
+    }
+
     public static class Data {
         @SerializedName("data")
         private Closet data;
@@ -50,6 +76,52 @@ public class DataModel {
 
         public void setCloth_id(int cloth_id) {
             this.cloth_id = cloth_id;
+        }
+    }
+
+    public static class PageInfo {
+        @SerializedName("page")
+        private int page;
+
+        @SerializedName("size")
+        private int size;
+
+        @SerializedName("totalElements")
+        private int totalElements;
+
+        @SerializedName("totalPages")
+        private int totalPages;
+
+        public int getPage() {
+            return page;
+        }
+
+        public int getSize() {
+            return size;
+        }
+
+        public int getTotalElements() {
+            return totalElements;
+        }
+
+        public int getTotalPages() {
+            return totalPages;
+        }
+
+        public void setPage(int page) {
+            this.page = page;
+        }
+
+        public void setSize(int size) {
+            this.size = size;
+        }
+
+        public void setTotalElements(int totalElements) {
+            this.totalElements = totalElements;
+        }
+
+        public void setTotalPages(int totalPages) {
+            this.totalPages = totalPages;
         }
     }
 
