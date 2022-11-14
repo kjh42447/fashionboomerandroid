@@ -22,6 +22,8 @@ import com.capstone.fashionboomerandroid.retrofit.DataModel.Closet;
 import com.capstone.fashionboomerandroid.retrofit.RetrofitInterface;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -32,8 +34,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private MatrixImage matrixImage = new MatrixImage();
-    private MatrixImage matrixImage2 = new MatrixImage();
+    private List<MatrixImage> matrixImages = new ArrayList<>();
     private ImageView ivImage2;
     private Button button1;
     private Button button2;
@@ -52,45 +53,50 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //
 //    private double oldDegree = 0; // 두손가락의 각도
 
-    private MatrixImage recentlyImage = matrixImage;
+    private MatrixImage recentlyImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        matrixImage.setMatrix(new Matrix());
-        matrixImage.setSavedMatrix(new Matrix());
+        matrixImages.add(new MatrixImage());
+        matrixImages.add(new MatrixImage());
 
-        matrixImage2.setMatrix(new Matrix());
-        matrixImage2.setSavedMatrix(new Matrix());
+        recentlyImage = matrixImages.get(0);
 
-        matrixImage.setImageView((ImageView) findViewById(R.id.iv_image));
-        matrixImage2.setImageView((ImageView) findViewById(R.id.iv_image11));
+        matrixImages.get(0).setMatrix(new Matrix());
+        matrixImages.get(0).setSavedMatrix(new Matrix());
+
+        matrixImages.get(1).setMatrix(new Matrix());
+        matrixImages.get(1).setSavedMatrix(new Matrix());
+
+        matrixImages.get(0).setImageView((ImageView) findViewById(R.id.iv_image));
+        matrixImages.get(1).setImageView((ImageView) findViewById(R.id.iv_image11));
         ivImage2 = (ImageView) findViewById(R.id.iv_image2);
         button1 = (Button) findViewById(R.id.button1);
         button2 = (Button) findViewById(R.id.button2);
         button3 = (Button) findViewById(R.id.button3);
 
 
-        matrixImage.getImageView().setOnTouchListener(onTouch);
-        matrixImage.getImageView().setScaleType(ImageView.ScaleType.MATRIX); // 스케일 타입을 매트릭스로 해줘야 움직인다.
+        matrixImages.get(0).getImageView().setOnTouchListener(onTouch);
+        matrixImages.get(0).getImageView().setScaleType(ImageView.ScaleType.MATRIX); // 스케일 타입을 매트릭스로 해줘야 움직인다.
 
-        matrixImage2.getImageView().setOnTouchListener(onTouch);
-        matrixImage2.getImageView().setScaleType(ImageView.ScaleType.MATRIX); // 스케일 타입을 매트릭스로 해줘야 움직인다.
+        matrixImages.get(1).getImageView().setOnTouchListener(onTouch);
+        matrixImages.get(1).getImageView().setScaleType(ImageView.ScaleType.MATRIX); // 스케일 타입을 매트릭스로 해줘야 움직인다.
 
         button1.setOnClickListener(this);
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                recentlyImage = matrixImage;
+                recentlyImage = matrixImages.get(0);
                 recentlyImage.getImageView().bringToFront();
             }
         });
         button3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                recentlyImage = matrixImage2;
+                recentlyImage = matrixImages.get(1);
                 recentlyImage.getImageView().bringToFront();
             }
         });
@@ -143,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         InputStream is = response.body().byteStream();
                         Bitmap bitmap = BitmapFactory.decodeStream(is);
-                        matrixImage.getImageView().setImageBitmap(bitmap);
+                        matrixImages.get(0).getImageView().setImageBitmap(bitmap);
                     }
 
                     @Override
@@ -168,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         InputStream is = response.body().byteStream();
                         Bitmap bitmap = BitmapFactory.decodeStream(is);
-                        matrixImage2.getImageView().setImageBitmap(bitmap);
+                        matrixImages.get(1).getImageView().setImageBitmap(bitmap);
                     }
 
                     @Override
