@@ -32,8 +32,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private MatrixImage matrixImage;
-    private ImageView ivImage11;
+    private MatrixImage matrixImage = new MatrixImage();
+    private MatrixImage matrixImage2 = new MatrixImage();
     private ImageView ivImage2;
     private Button button1;
     private Button button2;
@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //
 //    private double oldDegree = 0; // 두손가락의 각도
 
-    private MatrixImage recentlyImage;
+    private MatrixImage recentlyImage = matrixImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +62,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         matrixImage.setMatrix(new Matrix());
         matrixImage.setSavedMatrix(new Matrix());
 
+        matrixImage2.setMatrix(new Matrix());
+        matrixImage2.setSavedMatrix(new Matrix());
+
         matrixImage.setImageView((ImageView) findViewById(R.id.iv_image));
-        ivImage11 = (ImageView) findViewById(R.id.iv_image11);
+        matrixImage2.setImageView((ImageView) findViewById(R.id.iv_image11));
         ivImage2 = (ImageView) findViewById(R.id.iv_image2);
         button1 = (Button) findViewById(R.id.button1);
         button2 = (Button) findViewById(R.id.button2);
@@ -73,8 +76,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         matrixImage.getImageView().setOnTouchListener(onTouch);
         matrixImage.getImageView().setScaleType(ImageView.ScaleType.MATRIX); // 스케일 타입을 매트릭스로 해줘야 움직인다.
 
-        ivImage11.setOnTouchListener(onTouch);
-        ivImage11.setScaleType(ImageView.ScaleType.MATRIX); // 스케일 타입을 매트릭스로 해줘야 움직인다.
+        matrixImage2.getImageView().setOnTouchListener(onTouch);
+        matrixImage2.getImageView().setScaleType(ImageView.ScaleType.MATRIX); // 스케일 타입을 매트릭스로 해줘야 움직인다.
 
         button1.setOnClickListener(this);
         button2.setOnClickListener(new View.OnClickListener() {
@@ -87,8 +90,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         button3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                recentlyImage = ivImage11;
-                recentlyImage.bringToFront();
+                recentlyImage = matrixImage2;
+                recentlyImage.getImageView().bringToFront();
             }
         });
 
@@ -96,11 +99,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        String imageUrl = "http://fashionboomer.tk:8080/v11/closets/images/9";
 //        Glide.with(this).load(imageUrl).into(ivImage);
 
+        Retrofit.Builder builder = new Retrofit.Builder().baseUrl(BASE_URL);
+
+        // 옷장 리스트
+        Retrofit retrofitListJson = builder.addConverterFactory(GsonConverterFactory.create()).build();
+        RetrofitInterface retrofitInterfaces = retrofitListJson.create(RetrofitInterface.class);
+
+        retrofitInterfaces.getMemberClosets(1, 1, 10).enqueue(new Callback< DataModel.PageData>() {
+            @Override
+            public void onResponse(@NonNull Call< DataModel.PageData > call, @NonNull Response< DataModel.PageData > response) {
+//                myToast.show();
+                if(response.isSuccessful()) {
+                    Log.d("getMemberClosets", "getMemberClosets");
+                    DataModel.PageData data = response.body();
+                    for (Closet closet : data.getData()) {
+                        Log.d("id", Integer.toString(closet.getId()));
+                        Log.d("user_id", Long.toString(closet.getUser_id()));
+                        Log.d("cloth_id", Integer.toString(closet.getCloth_id()));
+                    }
+                    Log.d("page", Integer.toString(data.getPageInfo().getPage()));
+                    Log.d("size", Integer.toString(data.getPageInfo().getSize()));
+                    Log.d("totalElements", Integer.toString(data.getPageInfo().getTotalElements()));
+                    Log.d("totalPages", Integer.toString(data.getPageInfo().getTotalPages()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DataModel.PageData> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+
         // 이미지
         new Thread() {
             public void run() {
-                Retrofit.Builder builder = new Retrofit.Builder().baseUrl(BASE_URL);
-
                 Retrofit retrofit = builder.build();
                 RetrofitInterface retrofitInterface = retrofit.create(RetrofitInterface.class);
 
@@ -136,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         InputStream is = response.body().byteStream();
                         Bitmap bitmap = BitmapFactory.decodeStream(is);
-                        ivImage11.setImageBitmap(bitmap);
+                        matrixImage2.getImageView().setImageBitmap(bitmap);
                     }
 
                     @Override
@@ -151,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        Toast myToast = Toast.makeText(this.getApplicationContext(),"토스트테스트", Toast.LENGTH_SHORT);
+//        Toast myToast = Toast.makeText(this.getApplicationContext(),"토스트테스트", Toast.LENGTH_SHORT);
 
         // json
 //        Retrofit retrofitJson = builder.addConverterFactory(GsonConverterFactory.create()).build();
@@ -177,11 +209,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //            }
 //        });
 
+        // 레트로핏
+        Retrofit.Builder builder = new Retrofit.Builder().baseUrl(BASE_URL);
+
         // 누끼
         new Thread() {
             public void run() {
-                // 레트로핏
-                Retrofit.Builder builder = new Retrofit.Builder().baseUrl(BASE_URL);
 
                 Retrofit retrofit = builder.build();
                 RetrofitInterface retrofitInterface2 = retrofit.create(RetrofitInterface.class);
@@ -203,67 +236,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }.start();
 
-
-        // 옷장 리스트
-//        Retrofit retrofitListJson = builder.addConverterFactory(GsonConverterFactory.create()).build();
-//        RetrofitInterface retrofitInterfaces = retrofitListJson.create(RetrofitInterface.class);
-//
-//        retrofitInterfaces.getMemberClosets(1, 1, 10).enqueue(new Callback< DataModel.PageData>() {
-//            @Override
-//            public void onResponse(@NonNull Call< DataModel.PageData > call, @NonNull Response< DataModel.PageData > response) {
-////                myToast.show();
-//                if(response.isSuccessful()) {
-//                    Log.d("getMemberClosets", "getMemberClosets");
-//                    DataModel.PageData data = response.body();
-//                    for (Closet closet : data.getData()) {
-//                        Log.d("id", Integer.toString(closet.getId()));
-//                        Log.d("user_id", Long.toString(closet.getUser_id()));
-//                        Log.d("cloth_id", Integer.toString(closet.getCloth_id()));
-//                    }
-//                    Log.d("page", Integer.toString(data.getPageInfo().getPage()));
-//                    Log.d("size", Integer.toString(data.getPageInfo().getSize()));
-//                    Log.d("totalElements", Integer.toString(data.getPageInfo().getTotalElements()));
-//                    Log.d("totalPages", Integer.toString(data.getPageInfo().getTotalPages()));
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<DataModel.PageData> call, Throwable t) {
-//                myToast.show();
-//                t.printStackTrace();
-//            }
-//        });
-
     }
 
     // 이미지 컨트롤
     private View.OnTouchListener onTouch = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
-            if (v.equals(recentlyImage)) {
+            if (v.equals(recentlyImage.getImageView())) {
                 int action = event.getAction();
                 switch (action & MotionEvent.ACTION_MASK) {
                     case MotionEvent.ACTION_DOWN:
-                        matrixImage.setTouchMode(TOUCH_MODE.SINGLE);
+                        recentlyImage.setTouchMode(TOUCH_MODE.SINGLE);
                         downSingleEvent(event);
                         break;
                     case MotionEvent.ACTION_POINTER_DOWN:
                         if (event.getPointerCount() == 2) { // 두손가락 터치를 했을 때
-                            touchMode = TOUCH_MODE.MULTI;
+                            recentlyImage.setTouchMode(TOUCH_MODE.MULTI);
                             downMultiEvent(event);
                         }
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        if (touchMode == TOUCH_MODE.SINGLE) {
+                        if (recentlyImage.getTouchMode() == TOUCH_MODE.SINGLE) {
                             moveSingleEvent(event);
-                        } else if (touchMode == TOUCH_MODE.MULTI) {
+                        } else if (recentlyImage.getTouchMode() == TOUCH_MODE.MULTI) {
                             moveMultiEvent(event);
                         }
                         break;
 
                     case MotionEvent.ACTION_UP:
                     case MotionEvent.ACTION_POINTER_UP:
-                        touchMode = TOUCH_MODE.NONE;
+                        recentlyImage.setTouchMode(TOUCH_MODE.NONE);
                         break;
                 }
             }
@@ -288,40 +290,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void downSingleEvent(MotionEvent event) {
-        savedMatrix.set(matrix);
-        startPoint = new PointF(event.getX(), event.getY());
+        recentlyImage.getSavedMatrix().set(recentlyImage.getMatrix());
+        recentlyImage.setStartPoint(new PointF(event.getX(), event.getY()));
     }
 
     private void downMultiEvent(MotionEvent event) {
-        oldDistance = getDistance(event);
-        if (oldDistance > 5f) {
-            savedMatrix.set(matrix);
-            midPoint = getMidPoint(event);
-            double radian = Math.atan2(event.getY() - midPoint.y, event.getX() - midPoint.x);
-            oldDegree = (radian * 180) / Math.PI;
+        recentlyImage.setOldDistance(getDistance(event));
+        if (recentlyImage.getOldDistance() > 5f) {
+            recentlyImage.getSavedMatrix().set(recentlyImage.getMatrix());
+            recentlyImage.setMidPoint(getMidPoint(event));
+            double radian = Math.atan2(event.getY() - recentlyImage.getMidPoint().y, event.getX() - recentlyImage.getMidPoint().x);
+            recentlyImage.setOldDegree((radian * 180) / Math.PI);
         }
     }
 
     private void moveSingleEvent(MotionEvent event) {
-        matrix.set(savedMatrix);
-        matrix.postTranslate(event.getX() - startPoint.x, event.getY() - startPoint.y);
-        recentlyImage.setImageMatrix(matrix);
+        recentlyImage.getMatrix().set(recentlyImage.getSavedMatrix());
+        recentlyImage.getMatrix().postTranslate(event.getX() - recentlyImage.getStartPoint().x, event.getY() - recentlyImage.getStartPoint().y);
+        recentlyImage.getImageView().setImageMatrix(recentlyImage.getMatrix());
     }
 
     private void moveMultiEvent(MotionEvent event) {
         float newDistance = getDistance(event);
         if (newDistance > 5f) {
-            matrix.set(savedMatrix);
-            float scale = newDistance / oldDistance;
-            matrix.postScale(scale, scale, midPoint.x, midPoint.y);
+            recentlyImage.getMatrix().set(recentlyImage.getSavedMatrix());
+            float scale = newDistance / recentlyImage.getOldDistance();
+            recentlyImage.getMatrix().postScale(scale, scale, recentlyImage.getMidPoint().x, recentlyImage.getMidPoint().y);
 
-            double nowRadian = Math.atan2(event.getY() - midPoint.y, event.getX() - midPoint.x);
+            double nowRadian = Math.atan2(event.getY() - recentlyImage.getMidPoint().y, event.getX() - recentlyImage.getMidPoint().x);
             double nowDegress = (nowRadian * 180) / Math.PI;
-            float degree = (float) (nowDegress - oldDegree);
-            matrix.postRotate(degree, midPoint.x, midPoint.y);
+            float degree = (float) (nowDegress - recentlyImage.getOldDegree());
+            recentlyImage.getMatrix().postRotate(degree, recentlyImage.getMidPoint().x, recentlyImage.getMidPoint().y);
 
 
-            recentlyImage.setImageMatrix(matrix);
+            recentlyImage.getImageView().setImageMatrix(recentlyImage.getMatrix());
 
         }
     }
