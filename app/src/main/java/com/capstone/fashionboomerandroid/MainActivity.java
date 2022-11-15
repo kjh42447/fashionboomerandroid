@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.capstone.fashionboomerandroid.image.ImageViewClass;
 import com.capstone.fashionboomerandroid.image.MatrixImage;
 import com.capstone.fashionboomerandroid.image.TOUCH_MODE;
@@ -41,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private List<MatrixImage> matrixImages = new ArrayList<>();
     private List<ImageView> imageViews = new ArrayList<>();
     private List<MatrixImage> nukkiImageViews = new ArrayList<>();
-//    private ImageView ivImage2;
+    private ImageView glideImage;
     private  ImageView maleImage;
     private  ImageView femaleImage;
 
@@ -141,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recentlyImage = nukkiImageViews.get(0);
         maleImage = (ImageView) findViewById(R.id.maleImage);
         femaleImage = (ImageView) findViewById(R.id.femaleImage);
-//        ivImage2 = (ImageView) findViewById(R.id.iv_image2);
+        glideImage = (ImageView) findViewById(R.id.glideImage);
         button1 = (Button) findViewById(R.id.button1);
         maleButton = (Button) findViewById(R.id.maleButton);
         femaleButton = (Button) findViewById(R.id.femaleButton);
@@ -171,8 +172,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
 //        // Glide로 이미지 표시하기
-//        String imageUrl = "http://fashionboomer.tk:8080/v11/closets/images/9";
-//        Glide.with(this).load(imageUrl).into(ivImage);
+        String imageUrl = "http://fashionboomer.tk:8080/v11/closets/images/nukki/8";
+        Glide.with(this).load(imageUrl).into(glideImage);
 
         Retrofit.Builder builder = new Retrofit.Builder().baseUrl(BASE_URL);
 
