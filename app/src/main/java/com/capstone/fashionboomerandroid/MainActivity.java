@@ -40,11 +40,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private List<MatrixImage> matrixImages = new ArrayList<>();
     private List<ImageView> imageViews = new ArrayList<>();
-    private List<ImageView> nukkiImageViews = new ArrayList<>();
-    private ImageView ivImage2;
+    private List<MatrixImage> nukkiImageViews = new ArrayList<>();
+//    private ImageView ivImage2;
+    private  ImageView maleImage;
+    private  ImageView femaleImage;
+
     private Button button1;
-    private Button button2;
-    private Button button3;
+    private Button maleButton;
+    private Button femaleButton;
     private static final String BASE_URL = "http://fashionboomer.tk:8080";
 
     // 터치 관련 필드
@@ -69,6 +72,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ConstraintLayout closetNukkiLayout = (ConstraintLayout) findViewById(R.id.closetNukkiLayout);
         LinearLayout closetLayout = (LinearLayout) findViewById(R.id.closetLayout);
 
+
+
+        // 누끼 이미지 리스트 init
+        List<Bitmap> bitmapNukkis = new ArrayList<>();
+        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.hat1nukki));
+        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.hat2nukki));
+        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.pants1nukki));
+        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.pants2nukki));
+        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.shoes1nukki));
+        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.shoes2nukki));
+        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.top1nukki));
+        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.top2nukki));
+        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.top3nukki));
+        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.top4nukki));
+        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.top5nukki));
+        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.top6nukki));
+
+        for(int i = 0; i < 12; i++) {
+            nukkiImageViews.add(new MatrixImage());
+
+            nukkiImageViews.get(i).setMatrix(new Matrix());
+            nukkiImageViews.get(i).setSavedMatrix(new Matrix());
+
+            nukkiImageViews.get(i).setImageView(new ImageView(getBaseContext()));
+            nukkiImageViews.get(i).getImageView().setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1600));
+            nukkiImageViews.get(i).getImageView().setImageBitmap(bitmapNukkis.get(i));
+
+            nukkiImageViews.get(i).getImageView().setOnTouchListener(onTouch);
+            nukkiImageViews.get(i).getImageView().setScaleType(ImageView.ScaleType.MATRIX); // 스케일 타입을 매트릭스로 해줘야 움직인다.
+
+            nukkiImageViews.get(i).getImageView().setVisibility(View.INVISIBLE);
+
+            closetNukkiLayout.addView(nukkiImageViews.get(i).getImageView());
+        }
+
         // 일반 이미지 리스트 init
         List<Bitmap> bitmaps = new ArrayList<>();
         bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.hat1));
@@ -88,71 +126,47 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             imageViews.add(new ImageView(getBaseContext()));
             imageViews.get(i).setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             imageViews.get(i).setImageBitmap(bitmaps.get(i));
+            int finalI = i;
+            imageViews.get(i).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    recentlyImage = nukkiImageViews.get(finalI);
+                    recentlyImage.getImageView().setVisibility(View.VISIBLE);
+                    recentlyImage.getImageView().bringToFront();
+                }
+            });
             closetLayout.addView(imageViews.get(i));
         }
 
-
-        // 누끼 이미지 리스트 init
-        List<Bitmap> bitmapNukkis = new ArrayList<>();
-        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.hat1nukki));
-        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.hat2nukki));
-        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.pants1nukki));
-        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.pants2nukki));
-        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.shoes1nukki));
-        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.shoes2nukki));
-        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.top1nukki));
-        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.top2nukki));
-        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.top3nukki));
-        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.top4nukki));
-        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.top5nukki));
-        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.top6nukki));
-
-        for(int i = 0; i < 12; i++) {
-            nukkiImageViews.add(new ImageView(getBaseContext()));
-            nukkiImageViews.get(i).setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            nukkiImageViews.get(i).setImageBitmap(bitmapNukkis.get(i));
-//            closetLayout.addView(imageViews.get(i));
-        }
-
-
-        matrixImages.add(new MatrixImage());
-        matrixImages.add(new MatrixImage());
-
-        recentlyImage = matrixImages.get(0);
-
-        matrixImages.get(0).setMatrix(new Matrix());
-        matrixImages.get(0).setSavedMatrix(new Matrix());
-
-        matrixImages.get(1).setMatrix(new Matrix());
-        matrixImages.get(1).setSavedMatrix(new Matrix());
-
-        matrixImages.get(0).setImageView((ImageView) findViewById(R.id.iv_image));
-        matrixImages.get(1).setImageView((ImageView) findViewById(R.id.iv_image11));
-        ivImage2 = (ImageView) findViewById(R.id.iv_image2);
+        recentlyImage = nukkiImageViews.get(0);
+        maleImage = (ImageView) findViewById(R.id.maleImage);
+        femaleImage = (ImageView) findViewById(R.id.femaleImage);
+//        ivImage2 = (ImageView) findViewById(R.id.iv_image2);
         button1 = (Button) findViewById(R.id.button1);
-        button2 = (Button) findViewById(R.id.button2);
-        button3 = (Button) findViewById(R.id.button3);
+        maleButton = (Button) findViewById(R.id.maleButton);
+        femaleButton = (Button) findViewById(R.id.femaleButton);
 
+        maleImage.setImageResource(R.drawable.male);
+        femaleImage.setImageResource(R.drawable.female);
 
-        matrixImages.get(0).getImageView().setOnTouchListener(onTouch);
-        matrixImages.get(0).getImageView().setScaleType(ImageView.ScaleType.MATRIX); // 스케일 타입을 매트릭스로 해줘야 움직인다.
-
-        matrixImages.get(1).getImageView().setOnTouchListener(onTouch);
-        matrixImages.get(1).getImageView().setScaleType(ImageView.ScaleType.MATRIX); // 스케일 타입을 매트릭스로 해줘야 움직인다.
-
-        button1.setOnClickListener(this);
-        button2.setOnClickListener(new View.OnClickListener() {
+        button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                recentlyImage = matrixImages.get(0);
-                recentlyImage.getImageView().bringToFront();
+                recentlyImage.getImageView().setVisibility(View.GONE);
             }
         });
-        button3.setOnClickListener(new View.OnClickListener() {
+        maleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                recentlyImage = matrixImages.get(1);
-                recentlyImage.getImageView().bringToFront();
+                femaleImage.setVisibility(View.GONE);
+                maleImage.setVisibility(View.VISIBLE);
+            }
+        });
+        femaleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                maleImage.setVisibility(View.GONE);
+                femaleImage.setVisibility(View.VISIBLE);
             }
         });
 
@@ -192,53 +206,53 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         // 이미지
-        new Thread() {
-            public void run() {
-                Retrofit retrofit = builder.build();
-                RetrofitInterface retrofitInterface = retrofit.create(RetrofitInterface.class);
+//        new Thread() {
+//            public void run() {
+//                Retrofit retrofit = builder.build();
+//                RetrofitInterface retrofitInterface = retrofit.create(RetrofitInterface.class);
+//
+//                Call<ResponseBody> call = retrofitInterface.downloadImage(9);
+//
+//                call.enqueue(new Callback<ResponseBody>(){
+//                    @Override
+//                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+//                        InputStream is = response.body().byteStream();
+//                        Bitmap bitmap = BitmapFactory.decodeStream(is);
+//                        matrixImages.get(0).getImageView().setImageBitmap(bitmap);
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+//
+//                    }
+//                });
+//            }
+//        }.start();
 
-                Call<ResponseBody> call = retrofitInterface.downloadImage(9);
-
-                call.enqueue(new Callback<ResponseBody>(){
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        InputStream is = response.body().byteStream();
-                        Bitmap bitmap = BitmapFactory.decodeStream(is);
-                        matrixImages.get(0).getImageView().setImageBitmap(bitmap);
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-                    }
-                });
-            }
-        }.start();
-
-        new Thread() {
-            public void run() {
-                Retrofit.Builder builder = new Retrofit.Builder().baseUrl(BASE_URL);
-
-                Retrofit retrofit = builder.build();
-                RetrofitInterface retrofitInterface = retrofit.create(RetrofitInterface.class);
-
-                Call<ResponseBody> call = retrofitInterface.downloadImage(8);
-
-                call.enqueue(new Callback<ResponseBody>(){
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        InputStream is = response.body().byteStream();
-                        Bitmap bitmap = BitmapFactory.decodeStream(is);
-                        matrixImages.get(1).getImageView().setImageBitmap(bitmap);
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-                    }
-                });
-            }
-        }.start();
+//        new Thread() {
+//            public void run() {
+//                Retrofit.Builder builder = new Retrofit.Builder().baseUrl(BASE_URL);
+//
+//                Retrofit retrofit = builder.build();
+//                RetrofitInterface retrofitInterface = retrofit.create(RetrofitInterface.class);
+//
+//                Call<ResponseBody> call = retrofitInterface.downloadImage(8);
+//
+//                call.enqueue(new Callback<ResponseBody>(){
+//                    @Override
+//                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+//                        InputStream is = response.body().byteStream();
+//                        Bitmap bitmap = BitmapFactory.decodeStream(is);
+//                        matrixImages.get(1).getImageView().setImageBitmap(bitmap);
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+//
+//                    }
+//                });
+//            }
+//        }.start();
 
     }
 
@@ -274,28 +288,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Retrofit.Builder builder = new Retrofit.Builder().baseUrl(BASE_URL);
 
         // 누끼
-        new Thread() {
-            public void run() {
-
-                Retrofit retrofit = builder.build();
-                RetrofitInterface retrofitInterface2 = retrofit.create(RetrofitInterface.class);
-                Call<ResponseBody> call2 = retrofitInterface2.downloadNukkiImage(9);
-
-                call2.enqueue(new Callback<ResponseBody>(){
-                    @Override
-                    public void onResponse(Call<ResponseBody> call2, Response<ResponseBody> response) {
-                        InputStream is = response.body().byteStream();
-                        Bitmap bitmap2 = BitmapFactory.decodeStream(is);
-                        ivImage2.setImageBitmap(bitmap2);
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseBody> call2, Throwable t) {
-
-                    }
-                });
-            }
-        }.start();
+//        new Thread() {
+//            public void run() {
+//
+//                Retrofit retrofit = builder.build();
+//                RetrofitInterface retrofitInterface2 = retrofit.create(RetrofitInterface.class);
+//                Call<ResponseBody> call2 = retrofitInterface2.downloadNukkiImage(9);
+//
+//                call2.enqueue(new Callback<ResponseBody>(){
+//                    @Override
+//                    public void onResponse(Call<ResponseBody> call2, Response<ResponseBody> response) {
+//                        InputStream is = response.body().byteStream();
+//                        Bitmap bitmap2 = BitmapFactory.decodeStream(is);
+//                        ivImage2.setImageBitmap(bitmap2);
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<ResponseBody> call2, Throwable t) {
+//
+//                    }
+//                });
+//            }
+//        }.start();
 
     }
 
