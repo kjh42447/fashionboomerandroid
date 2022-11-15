@@ -2,6 +2,7 @@ package com.capstone.fashionboomerandroid;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,10 +12,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.capstone.fashionboomerandroid.image.ImageViewClass;
 import com.capstone.fashionboomerandroid.image.MatrixImage;
 import com.capstone.fashionboomerandroid.image.TOUCH_MODE;
 import com.capstone.fashionboomerandroid.retrofit.DataModel;
@@ -35,6 +39,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private List<MatrixImage> matrixImages = new ArrayList<>();
+    private List<ImageView> imageViews = new ArrayList<>();
+    private List<ImageView> nukkiImageViews = new ArrayList<>();
     private ImageView ivImage2;
     private Button button1;
     private Button button2;
@@ -59,6 +65,55 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ConstraintLayout closetNukkiLayout = (ConstraintLayout) findViewById(R.id.closetNukkiLayout);
+        LinearLayout closetLayout = (LinearLayout) findViewById(R.id.closetLayout);
+
+        // 일반 이미지 리스트 init
+        List<Bitmap> bitmaps = new ArrayList<>();
+        bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.hat1));
+        bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.hat2));
+        bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.pants1));
+        bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.pants2));
+        bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.shoes1));
+        bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.shoes2));
+        bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.top1));
+        bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.top2));
+        bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.top3));
+        bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.top4));
+        bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.top5));
+        bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.top6));
+
+        for(int i = 0; i < 12; i++) {
+            imageViews.add(new ImageView(getBaseContext()));
+            imageViews.get(i).setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            imageViews.get(i).setImageBitmap(bitmaps.get(i));
+            closetLayout.addView(imageViews.get(i));
+        }
+
+
+        // 누끼 이미지 리스트 init
+        List<Bitmap> bitmapNukkis = new ArrayList<>();
+        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.hat1nukki));
+        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.hat2nukki));
+        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.pants1nukki));
+        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.pants2nukki));
+        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.shoes1nukki));
+        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.shoes2nukki));
+        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.top1nukki));
+        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.top2nukki));
+        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.top3nukki));
+        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.top4nukki));
+        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.top5nukki));
+        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.top6nukki));
+
+        for(int i = 0; i < 12; i++) {
+            nukkiImageViews.add(new ImageView(getBaseContext()));
+            nukkiImageViews.get(i).setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            nukkiImageViews.get(i).setImageBitmap(bitmapNukkis.get(i));
+//            closetLayout.addView(imageViews.get(i));
+        }
+
 
         matrixImages.add(new MatrixImage());
         matrixImages.add(new MatrixImage());
