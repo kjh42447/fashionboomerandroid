@@ -4,6 +4,7 @@ package com.capstone.fashionboomerandroid.retrofit;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DataModel {
@@ -15,6 +16,7 @@ public class DataModel {
         private PageInfo pageInfo;
 
         public PageData(PageData pageData) {
+            this.data = new ArrayList<>();
             for (Closet closet : pageData.getData()) {
                 this.data.add(new Closet(closet.id, closet.user_id, closet.cloth_id));
             }

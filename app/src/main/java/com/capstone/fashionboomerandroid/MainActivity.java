@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -39,11 +40,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private final MainActivity mainActivity = this;
+
     private DataModel.PageData closets;
     private List<MatrixImage> matrixImages = new ArrayList<>();
     private List<ImageView> imageViews = new ArrayList<>();
     private List<MatrixImage> nukkiImageViews = new ArrayList<>();
-    private ImageView glideImage;
+//    private ImageView glideImage;
     private  ImageView maleImage;
     private  ImageView femaleImage;
 
@@ -69,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // ID
         maleImage = (ImageView) findViewById(R.id.maleImage);
         femaleImage = (ImageView) findViewById(R.id.femaleImage);
-        glideImage = (ImageView) findViewById(R.id.glideImage);
+//        glideImage = (ImageView) findViewById(R.id.glideImage);
         button1 = (Button) findViewById(R.id.button1);
         maleButton = (Button) findViewById(R.id.maleButton);
         femaleButton = (Button) findViewById(R.id.femaleButton);
@@ -91,15 +94,58 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Log.d("getMemberClosets", "getMemberClosets");
                     closets = new DataModel.PageData(response.body());
 
-                    for (Closet closet : closets.getData()) {
-                        Log.d("id", Integer.toString(closet.getId()));
-                        Log.d("user_id", Long.toString(closet.getUser_id()));
-                        Log.d("cloth_id", Integer.toString(closet.getCloth_id()));
+                    for(int i = 0; i < closets.getData().size(); i++) {
+                        // 누끼 이미지 뷰
+                        nukkiImageViews.add(new MatrixImage());
+
+                        nukkiImageViews.get(i).setMatrix(new Matrix());
+                        nukkiImageViews.get(i).setSavedMatrix(new Matrix());
+
+                        nukkiImageViews.get(i).setImageView(new ImageView(getBaseContext()));
+                        nukkiImageViews.get(i).getImageView().setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1600));
+                        Glide.with(mainActivity).load(BASE_URL + "/v11/closets/images/nukki/" + closets.getData().get(i).getId()).into(nukkiImageViews.get(i).getImageView());
+                        
+                        // 누끼 이미지 터치 이벤트
+                        nukkiImageViews.get(i).getImageView().setOnTouchListener(onTouch);
+                        nukkiImageViews.get(i).getImageView().setScaleType(ImageView.ScaleType.MATRIX); // 스케일 타입을 매트릭스로 해줘야 움직인다.
+
+                        nukkiImageViews.get(i).getImageView().setVisibility(View.INVISIBLE);
+
+                        // 뷰 추가
+                        closetNukkiLayout.addView(nukkiImageViews.get(i).getImageView());
+
+
+
+                        // 일반 이미지 뷰
+                        imageViews.add(new ImageView(getBaseContext()));
+                        imageViews.get(i).setLayoutParams(new ViewGroup.LayoutParams(400, 400));
+                        Glide.with(mainActivity).load(BASE_URL + "/v11/closets/images/" + closets.getData().get(i).getId()).into(imageViews.get(i));
+                        int finalI = i;
+
+                        // 일반 이미지 클릭 이벤트
+                        imageViews.get(i).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                recentlyImage = nukkiImageViews.get(finalI);
+                                recentlyImage.getImageView().setVisibility(View.VISIBLE);
+                                recentlyImage.getImageView().bringToFront();
+                            }
+                        });
+
+                        closetLayout.addView(imageViews.get(i));
+
+                        // 데이터 잘 들어감
+//                        Log.d("id", Integer.toString(closet.getId()));
+//                        Log.d("user_id", Long.toString(closet.getUser_id()));
+//                        Log.d("cloth_id", Integer.toString(closet.getCloth_id()));
                     }
-                    Log.d("page", Integer.toString(closets.getPageInfo().getPage()));
-                    Log.d("size", Integer.toString(closets.getPageInfo().getSize()));
-                    Log.d("totalElements", Integer.toString(closets.getPageInfo().getTotalElements()));
-                    Log.d("totalPages", Integer.toString(closets.getPageInfo().getTotalPages()));
+                    // 뷰 추가
+                    recentlyImage = nukkiImageViews.get(0);
+
+//                    Log.d("page", Integer.toString(closets.getPageInfo().getPage()));
+//                    Log.d("size", Integer.toString(closets.getPageInfo().getSize()));
+//                    Log.d("totalElements", Integer.toString(closets.getPageInfo().getTotalElements()));
+//                    Log.d("totalPages", Integer.toString(closets.getPageInfo().getTotalPages()));
                 }
             }
 
@@ -109,85 +155,85 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        for (Closet closet : closets.getData()) {
-            Log.d("id", Integer.toString(closet.getId()));
-            Log.d("user_id", Long.toString(closet.getUser_id()));
-            Log.d("cloth_id", Integer.toString(closet.getCloth_id()));
-        }
+        Log.d("Test : ", "test");
+//        for (Closet closet : closets.getData()) {
+//            Log.d("id", Integer.toString(closet.getId()));
+//            Log.d("user_id", Long.toString(closet.getUser_id()));
+//            Log.d("cloth_id", Integer.toString(closet.getCloth_id()));
+//        }
 
         // Glide로 이미지 표시하기
-        String imageUrl = "http://fashionboomer.tk:8080/v11/closets/images/nukki/8";
-        Glide.with(this).load(imageUrl).into(glideImage);
+//        String imageUrl = "http://fashionboomer.tk:8080/v11/closets/images/nukki/8";
+//        Glide.with(this).load(imageUrl).into(glideImage);
 
         // 누끼 이미지 리스트 init
-        List<Bitmap> bitmapNukkis = new ArrayList<>();
-        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.hat1nukki));
-        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.hat2nukki));
-        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.pants1nukki));
-        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.pants2nukki));
-        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.shoes1nukki));
-        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.shoes2nukki));
-        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.top1nukki));
-        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.top2nukki));
-        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.top3nukki));
-        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.top4nukki));
-        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.top5nukki));
-        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.top6nukki));
+//        List<Bitmap> bitmapNukkis = new ArrayList<>();
+//        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.hat1nukki));
+//        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.hat2nukki));
+//        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.pants1nukki));
+//        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.pants2nukki));
+//        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.shoes1nukki));
+//        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.shoes2nukki));
+//        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.top1nukki));
+//        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.top2nukki));
+//        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.top3nukki));
+//        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.top4nukki));
+//        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.top5nukki));
+//        bitmapNukkis.add(BitmapFactory.decodeResource(getResources(), R.drawable.top6nukki));
 
-        for(int i = 0; i < 12; i++) {
-            nukkiImageViews.add(new MatrixImage());
-
-            nukkiImageViews.get(i).setMatrix(new Matrix());
-            nukkiImageViews.get(i).setSavedMatrix(new Matrix());
-
-            nukkiImageViews.get(i).setImageView(new ImageView(getBaseContext()));
-            nukkiImageViews.get(i).getImageView().setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1600));
-            nukkiImageViews.get(i).getImageView().setImageBitmap(bitmapNukkis.get(i));
-
-            // 누끼 이미지 터치 이벤트
-            nukkiImageViews.get(i).getImageView().setOnTouchListener(onTouch);
-            nukkiImageViews.get(i).getImageView().setScaleType(ImageView.ScaleType.MATRIX); // 스케일 타입을 매트릭스로 해줘야 움직인다.
-
-            nukkiImageViews.get(i).getImageView().setVisibility(View.INVISIBLE);
-
-            closetNukkiLayout.addView(nukkiImageViews.get(i).getImageView());
-        }
+//        for(int i = 0; i < closets.getData().size(); i++) {
+//            nukkiImageViews.add(new MatrixImage());
+//
+//            nukkiImageViews.get(i).setMatrix(new Matrix());
+//            nukkiImageViews.get(i).setSavedMatrix(new Matrix());
+//
+//            nukkiImageViews.get(i).setImageView(new ImageView(getBaseContext()));
+//            nukkiImageViews.get(i).getImageView().setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1600));
+////            nukkiImageViews.get(i).getImageView().setImageBitmap(bitmapNukkis.get(i));
+//            Glide.with(this).load(BASE_URL + "/v11/closets/images/nukki/" + closets.getData().get(i).getCloth_id()).into(nukkiImageViews.get(i).getImageView());
+//
+//            // 누끼 이미지 터치 이벤트
+//            nukkiImageViews.get(i).getImageView().setOnTouchListener(onTouch);
+//            nukkiImageViews.get(i).getImageView().setScaleType(ImageView.ScaleType.MATRIX); // 스케일 타입을 매트릭스로 해줘야 움직인다.
+//
+//            nukkiImageViews.get(i).getImageView().setVisibility(View.INVISIBLE);
+//
+//            closetNukkiLayout.addView(nukkiImageViews.get(i).getImageView());
+//        }
 
         // 일반 이미지 리스트 init
-        List<Bitmap> bitmaps = new ArrayList<>();
-        bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.hat1));
-        bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.hat2));
-        bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.pants1));
-        bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.pants2));
-        bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.shoes1));
-        bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.shoes2));
-        bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.top1));
-        bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.top2));
-        bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.top3));
-        bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.top4));
-        bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.top5));
-        bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.top6));
+//        List<Bitmap> bitmaps = new ArrayList<>();
+//        bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.hat1));
+//        bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.hat2));
+//        bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.pants1));
+//        bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.pants2));
+//        bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.shoes1));
+//        bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.shoes2));
+//        bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.top1));
+//        bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.top2));
+//        bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.top3));
+//        bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.top4));
+//        bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.top5));
+//        bitmaps.add(BitmapFactory.decodeResource(getResources(), R.drawable.top6));
 
-        for(int i = 0; i < 12; i++) {
-            imageViews.add(new ImageView(getBaseContext()));
-            imageViews.get(i).setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            imageViews.get(i).setImageBitmap(bitmaps.get(i));
-            int finalI = i;
-
-            // 일반 이미지 클릭 이벤트
-            imageViews.get(i).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    recentlyImage = nukkiImageViews.get(finalI);
-                    recentlyImage.getImageView().setVisibility(View.VISIBLE);
-                    recentlyImage.getImageView().bringToFront();
-                }
-            });
-
-            closetLayout.addView(imageViews.get(i));
-        }
-
-        recentlyImage = nukkiImageViews.get(0);
+//        for(int i = 0; i < 12; i++) {
+//            imageViews.add(new ImageView(getBaseContext()));
+//            imageViews.get(i).setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+//            imageViews.get(i).setImageBitmap(bitmaps.get(i));
+//            int finalI = i;
+//
+//            // 일반 이미지 클릭 이벤트
+//            imageViews.get(i).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    recentlyImage = nukkiImageViews.get(finalI);
+//                    recentlyImage.getImageView().setVisibility(View.VISIBLE);
+//                    recentlyImage.getImageView().bringToFront();
+//                }
+//            });
+//
+//            closetLayout.addView(imageViews.get(i));
+//        }
 
         maleImage.setImageResource(R.drawable.male);
         femaleImage.setImageResource(R.drawable.female);
@@ -217,31 +263,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-//        Toast myToast = Toast.makeText(this.getApplicationContext(),"토스트테스트", Toast.LENGTH_SHORT);
-
-        // json
-//        Retrofit retrofitJson = builder.addConverterFactory(GsonConverterFactory.create()).build();
-//        RetrofitInterface retrofitInterface = retrofitJson.create(RetrofitInterface.class);
-//        Log.d("Test", "Log Test");
-//
-//        retrofitInterface.getCloset(8).enqueue(new Callback< DataModel.Data>() {
-//            @Override
-//            public void onResponse(@NonNull Call< DataModel.Data > call, @NonNull Response< DataModel.Data > response) {
-////                myToast.show();
-//                if(response.isSuccessful()) {
-//                    DataModel.Data data = response.body();
-//                    Log.d("id", Integer.toString(data.getData().getId()));
-//                    Log.d("user_id", Long.toString(data.getData().getUser_id()));
-//                    Log.d("cloth_id", Integer.toString(data.getData().getCloth_id()));
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<DataModel.Data> call, Throwable t) {
-//                myToast.show();
-//                t.printStackTrace();
-//            }
-//        });
 
     }
 
