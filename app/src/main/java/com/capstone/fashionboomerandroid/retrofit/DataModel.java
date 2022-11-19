@@ -14,6 +14,14 @@ public class DataModel {
         @SerializedName("pageInfo")
         private PageInfo pageInfo;
 
+        public PageData(PageData pageData) {
+            for (Closet closet : pageData.getData()) {
+                this.data.add(new Closet(closet.id, closet.user_id, closet.cloth_id));
+            }
+
+            this.pageInfo = new PageInfo(pageData.getPageInfo().page, pageData.getPageInfo().size, pageData.getPageInfo().totalElements, pageData.getPageInfo().totalPages);
+        }
+
         public List<Closet> getData() {
             return data;
         }
@@ -54,6 +62,12 @@ public class DataModel {
         @SerializedName("cloth_id")
         private int cloth_id;
 
+        public Closet(int id, Long user_id, int cloth_id) {
+            this.id = id;
+            this.user_id = user_id;
+            this.cloth_id = cloth_id;
+        }
+
         public int getId() {
             return id;
         }
@@ -91,6 +105,13 @@ public class DataModel {
 
         @SerializedName("totalPages")
         private int totalPages;
+
+        public PageInfo(int page, int size, int totalElements, int totalPages) {
+            this.page = page;
+            this.size = size;
+            this.totalElements = totalElements;
+            this.totalPages = totalPages;
+        }
 
         public int getPage() {
             return page;
