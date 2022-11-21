@@ -52,9 +52,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button button1;
     private Button maleButton;
     private Button femaleButton;
+    private Button myClosetButton;
+    private Button likeClosetButton;
 
     private ConstraintLayout closetNukkiLayout;
-    private LinearLayout closetLayout;
+    private LinearLayout likeClosetLayout;
+    private LinearLayout myClosetLayout;
 
     private static final String BASE_URL = "http://fashionboomer.tk:8080";
 
@@ -71,12 +74,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // ID
         maleImage = (ImageView) findViewById(R.id.maleImage);
         femaleImage = (ImageView) findViewById(R.id.femaleImage);
+
         button1 = (Button) findViewById(R.id.button1);
         maleButton = (Button) findViewById(R.id.maleButton);
         femaleButton = (Button) findViewById(R.id.femaleButton);
+        myClosetButton = (Button) findViewById(R.id.myClosetButton);
+        likeClosetButton = (Button) findViewById(R.id.likeClosetButton);
 
         closetNukkiLayout = (ConstraintLayout) findViewById(R.id.closetNukkiLayout);
-        closetLayout = (LinearLayout) findViewById(R.id.closetLayout);
+        myClosetLayout = (LinearLayout) findViewById(R.id.myClosetLayout);
+        likeClosetLayout = (LinearLayout) findViewById(R.id.likeClosetLayout);
 
         Retrofit.Builder builder = new Retrofit.Builder().baseUrl(BASE_URL);
 
@@ -84,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Retrofit retrofitListJson = builder.addConverterFactory(GsonConverterFactory.create()).build();
         RetrofitInterface retrofitInterfaces = retrofitListJson.create(RetrofitInterface.class);
 
-        retrofitInterfaces.getMemberClosets(memberId.intValue(), 1, 10).enqueue(new Callback< DataModel.PageData>() {
+        retrofitInterfaces.getMemberClosets(memberId.intValue(), 1, 30).enqueue(new Callback< DataModel.PageData>() {
             @Override
             public void onResponse(@NonNull Call< DataModel.PageData > call, @NonNull Response< DataModel.PageData > response) {
 //                myToast.show();
@@ -115,6 +122,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
                         // 일반 이미지 뷰
+                        // 좋아요 누를때 보임
+                        likeClosetLayout.setVisibility(View.GONE);
+                        
                         imageViews.add(new ImageView(getBaseContext()));
                         imageViews.get(i).setLayoutParams(new ViewGroup.LayoutParams(400, 400));
                         Glide.with(mainActivity).load(BASE_URL + "/v11/closets/images/" + closets.getData().get(i).getId()).into(imageViews.get(i));
@@ -130,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             }
                         });
 
-                        closetLayout.addView(imageViews.get(i));
+                        likeClosetLayout.addView(imageViews.get(i));
                     }
                     // 뷰 추가
                     recentlyImage = nukkiImageViews.get(0);
@@ -165,6 +175,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(View view) {
                 maleImage.setVisibility(View.GONE);
                 femaleImage.setVisibility(View.VISIBLE);
+            }
+        });
+        myClosetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                likeClosetLayout.setVisibility(View.GONE);
+                myClosetLayout.setVisibility(View.VISIBLE);
+            }
+        });
+
+        likeClosetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                myClosetLayout.setVisibility(View.GONE);
+                likeClosetLayout.setVisibility(View.VISIBLE);
             }
         });
 

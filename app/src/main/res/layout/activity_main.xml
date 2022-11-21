@@ -23,20 +23,42 @@
                 android:layout_height="wrap_content">
 
                 <Button
-                    android:layout_width="match_parent"
+                    android:layout_width="65dp"
                     android:layout_height="match_parent"
                     android:minWidth="10dp"
                     android:id="@+id/maleButton"
                     android:fontFamily="@font/bmdohyun"
-                    android:text="남성" />
+                    android:text="남 성" />
 
                 <Button
-                    android:layout_width="match_parent"
+                    android:layout_width="65dp"
                     android:layout_height="match_parent"
                     android:minWidth="10dp"
                     android:id="@+id/femaleButton"
                     android:fontFamily="@font/bmdohyun"
-                    android:text="여성" />
+                    android:text="여 성" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:layout_width="65dp"
+                    android:layout_height="match_parent"
+                    android:minWidth="5dp"
+                    android:id="@+id/myClosetButton"
+                    android:fontFamily="@font/bmdohyun"
+                    android:text="내 옷" />
+
+                <Button
+                    android:layout_width="65dp"
+                    android:layout_height="match_parent"
+                    android:minWidth="5dp"
+                    android:id="@+id/likeClosetButton"
+                    android:fontFamily="@font/bmdohyun"
+                    android:text="좋아요" />
 
             </LinearLayout>
 
@@ -59,21 +81,27 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
-                <Button
+                <LinearLayout
                     android:visibility="gone"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/button2"
-                    android:text="cloth1" />
+                    android:id="@+id/myClosetLayout"
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
 
-                <Button
+                </LinearLayout>
+
+                <LinearLayout
                     android:visibility="gone"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/button3"
-                    android:text="cloth2" />
+                    android:id="@+id/likeClosetLayout"
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                </LinearLayout>
 
             </LinearLayout>
+
+
         </HorizontalScrollView>
     </LinearLayout>
 
