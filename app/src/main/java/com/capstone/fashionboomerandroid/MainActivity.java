@@ -3,12 +3,15 @@ package com.capstone.fashionboomerandroid;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -27,6 +30,7 @@ import com.capstone.fashionboomerandroid.retrofit.DataModel;
 import com.capstone.fashionboomerandroid.retrofit.DataModel.Closet;
 import com.capstone.fashionboomerandroid.retrofit.RetrofitInterface;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,10 +48,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private DataModel.PageData closets;
     private List<MatrixImage> matrixImages = new ArrayList<>();
-    private List<ImageView> imageViews = new ArrayList<>();
-    private List<MatrixImage> nukkiImageViews = new ArrayList<>();
-    private  ImageView maleImage;
-    private  ImageView femaleImage;
+    private List<ImageView> myImageViews = new ArrayList<>();
+    private List<MatrixImage> myNukkiImageViews = new ArrayList<>();
+    private List<ImageView> likeImageViews = new ArrayList<>();
+    private List<MatrixImage> likeNukkiImageViews = new ArrayList<>();
+    private ImageView maleImage;
+    private ImageView femaleImage;
+    private ImageView testImage;
 
     private Button button1;
     private Button maleButton;
@@ -60,6 +67,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private LinearLayout myClosetLayout;
 
     private static final String BASE_URL = "http://fashionboomer.tk:8080";
+    // AbsolutePath : /storage/emulated/0/
+    private String rawPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/FashionBoomer/raw";
+    private String nukkiPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/FashionBoomer/nukki";
 
     private MatrixImage recentlyImage;
 
@@ -91,6 +101,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Retrofit retrofitListJson = builder.addConverterFactory(GsonConverterFactory.create()).build();
         RetrofitInterface retrofitInterfaces = retrofitListJson.create(RetrofitInterface.class);
 
+        // 내 옷 이미지 먼저 보여줌
+        myClosetLayout.setVisibility(View.VISIBLE);
+        likeClosetLayout.setVisibility(View.GONE);
+
         retrofitInterfaces.getMemberClosets(memberId.intValue(), 1, 30).enqueue(new Callback< DataModel.PageData>() {
             @Override
             public void onResponse(@NonNull Call< DataModel.PageData > call, @NonNull Response< DataModel.PageData > response) {
@@ -101,49 +115,48 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     for(int i = 0; i < closets.getData().size(); i++) {
                         // 누끼 이미지 뷰
-                        nukkiImageViews.add(new MatrixImage());
+                        likeNukkiImageViews.add(new MatrixImage());
 
-                        nukkiImageViews.get(i).setMatrix(new Matrix());
-                        nukkiImageViews.get(i).setSavedMatrix(new Matrix());
+                        likeNukkiImageViews.get(i).setMatrix(new Matrix());
+                        likeNukkiImageViews.get(i).setSavedMatrix(new Matrix());
 
-                        nukkiImageViews.get(i).setImageView(new ImageView(getBaseContext()));
-                        nukkiImageViews.get(i).getImageView().setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1600));
-                        Glide.with(mainActivity).load(BASE_URL + "/v11/closets/images/nukki/" + closets.getData().get(i).getId()).into(nukkiImageViews.get(i).getImageView());
+                        likeNukkiImageViews.get(i).setImageView(new ImageView(getBaseContext()));
+                        likeNukkiImageViews.get(i).getImageView().setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1600));
+                        Glide.with(mainActivity).load(BASE_URL + "/v11/closets/images/nukki/" + closets.getData().get(i).getId()).into(likeNukkiImageViews.get(i).getImageView());
                         
                         // 누끼 이미지 터치 이벤트
-                        nukkiImageViews.get(i).getImageView().setOnTouchListener(onTouch);
-                        nukkiImageViews.get(i).getImageView().setScaleType(ImageView.ScaleType.MATRIX); // 스케일 타입을 매트릭스로 해줘야 움직인다.
+                        likeNukkiImageViews.get(i).getImageView().setOnTouchListener(onTouch);
+                        likeNukkiImageViews.get(i).getImageView().setScaleType(ImageView.ScaleType.MATRIX); // 스케일 타입을 매트릭스로 해줘야 움직인다.
 
-                        nukkiImageViews.get(i).getImageView().setVisibility(View.INVISIBLE);
+                        likeNukkiImageViews.get(i).getImageView().setVisibility(View.INVISIBLE);
 
                         // 뷰 추가
-                        closetNukkiLayout.addView(nukkiImageViews.get(i).getImageView());
-
+                        closetNukkiLayout.addView(likeNukkiImageViews.get(i).getImageView());
 
 
                         // 일반 이미지 뷰
                         // 좋아요 누를때 보임
                         likeClosetLayout.setVisibility(View.GONE);
                         
-                        imageViews.add(new ImageView(getBaseContext()));
-                        imageViews.get(i).setLayoutParams(new ViewGroup.LayoutParams(400, 400));
-                        Glide.with(mainActivity).load(BASE_URL + "/v11/closets/images/" + closets.getData().get(i).getId()).into(imageViews.get(i));
+                        likeImageViews.add(new ImageView(getBaseContext()));
+                        likeImageViews.get(i).setLayoutParams(new ViewGroup.LayoutParams(400, 400));
+                        Glide.with(mainActivity).load(BASE_URL + "/v11/closets/images/" + closets.getData().get(i).getId()).into(likeImageViews.get(i));
                         int finalI = i;
 
                         // 일반 이미지 클릭 이벤트
-                        imageViews.get(i).setOnClickListener(new View.OnClickListener() {
+                        likeImageViews.get(i).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                recentlyImage = nukkiImageViews.get(finalI);
+                                recentlyImage = likeNukkiImageViews.get(finalI);
                                 recentlyImage.getImageView().setVisibility(View.VISIBLE);
                                 recentlyImage.getImageView().bringToFront();
                             }
                         });
 
-                        likeClosetLayout.addView(imageViews.get(i));
+                        likeClosetLayout.addView(likeImageViews.get(i));
                     }
                     // 뷰 추가
-                    recentlyImage = nukkiImageViews.get(0);
+                    recentlyImage = likeNukkiImageViews.get(0);
                 }
             }
 
@@ -193,6 +206,74 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
+        // permission
+        ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, MODE_PRIVATE);
+
+        // 내 옷 이미지 목록 뷰, 이벤트
+        List<String> rawImageNames = getFileNameList(rawPath);
+        List<String> nukkiImageNames = getFileNameList(nukkiPath);
+
+        for(int i = 0; i < rawImageNames.size(); i++) {
+            // 누끼 이미지 뷰
+            myNukkiImageViews.add(new MatrixImage());
+
+            myNukkiImageViews.get(i).setMatrix(new Matrix());
+            myNukkiImageViews.get(i).setSavedMatrix(new Matrix());
+
+            myNukkiImageViews.get(i).setImageView(new ImageView(getBaseContext()));
+            myNukkiImageViews.get(i).getImageView().setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1600));
+            myNukkiImageViews.get(i).getImageView().setImageBitmap(BitmapFactory.decodeFile(nukkiPath + "/" + nukkiImageNames.get(i)));
+
+            // 누끼 이미지 터치 이벤트
+            myNukkiImageViews.get(i).getImageView().setOnTouchListener(onTouch);
+            myNukkiImageViews.get(i).getImageView().setScaleType(ImageView.ScaleType.MATRIX); // 스케일 타입을 매트릭스로 해줘야 움직인다.
+
+            myNukkiImageViews.get(i).getImageView().setVisibility(View.INVISIBLE);
+
+            // 뷰 추가
+            closetNukkiLayout.addView(myNukkiImageViews.get(i).getImageView());
+
+
+            // 일반 이미지 뷰
+            myImageViews.add(new ImageView(getBaseContext()));
+            myImageViews.get(i).setLayoutParams(new ViewGroup.LayoutParams(400, 400));
+            myImageViews.get(i).setImageBitmap(BitmapFactory.decodeFile(rawPath + "/" + rawImageNames.get(i)));
+            int finalI = i;
+
+            // 일반 이미지 클릭 이벤트
+            myImageViews.get(i).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    recentlyImage = myNukkiImageViews.get(finalI);
+                    recentlyImage.getImageView().setVisibility(View.VISIBLE);
+                    recentlyImage.getImageView().bringToFront();
+                }
+            });
+
+            myClosetLayout.addView(myImageViews.get(i));
+        }
+
+    }
+
+    // 파일 목록 불러오기
+    private File[] getFileList(String path) {
+        File directory = new File(path);
+
+        return directory.listFiles();
+    }
+
+    // 파일 이름 목록 불러오기
+    private List<String> getFileNameList(String path) {
+        File directory = new File(path);
+        File[] files = directory.listFiles();
+
+        List<String> filesNameList = new ArrayList<>();
+
+        for (int i=0; i< files.length; i++) {
+            filesNameList.add(files[i].getName());
+        }
+
+        return filesNameList;
     }
 
     @Override
