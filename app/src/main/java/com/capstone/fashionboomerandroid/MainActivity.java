@@ -6,10 +6,12 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.PointF;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -46,6 +48,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private final MainActivity mainActivity = this;
 
+    private final int GET_GALLERY_IMAGE = 200;
+
     private DataModel.PageData closets;
     private List<MatrixImage> matrixImages = new ArrayList<>();
     private List<ImageView> myImageViews = new ArrayList<>();
@@ -54,11 +58,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private List<MatrixImage> likeNukkiImageViews = new ArrayList<>();
     private ImageView maleImage;
     private ImageView femaleImage;
-    private ImageView testImage;
+    private ImageView myBodyImage;
 
     private Button button1;
     private Button maleButton;
     private Button femaleButton;
+    private Button myBodyButton;
     private Button myClosetButton;
     private Button likeClosetButton;
 
@@ -84,10 +89,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // ID
         maleImage = (ImageView) findViewById(R.id.maleImage);
         femaleImage = (ImageView) findViewById(R.id.femaleImage);
+        myBodyImage = (ImageView) findViewById(R.id.myBodyImage);
 
         button1 = (Button) findViewById(R.id.button1);
         maleButton = (Button) findViewById(R.id.maleButton);
         femaleButton = (Button) findViewById(R.id.femaleButton);
+        myBodyButton = (Button) findViewById(R.id.myBodyButton);
         myClosetButton = (Button) findViewById(R.id.myClosetButton);
         likeClosetButton = (Button) findViewById(R.id.likeClosetButton);
 
@@ -180,6 +187,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onClick(View view) {
                 femaleImage.setVisibility(View.GONE);
+                myBodyImage.setVisibility(View.GONE);
                 maleImage.setVisibility(View.VISIBLE);
             }
         });
@@ -187,7 +195,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onClick(View view) {
                 maleImage.setVisibility(View.GONE);
+                myBodyImage.setVisibility(View.GONE);
                 femaleImage.setVisibility(View.VISIBLE);
+            }
+        });
+        myBodyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                maleImage.setVisibility(View.GONE);
+                femaleImage.setVisibility(View.GONE);
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setDataAndType(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+                startActivityForResult(intent, GET_GALLERY_IMAGE);
+                myBodyImage.setVisibility(View.VISIBLE);
             }
         });
         myClosetButton.setOnClickListener(new View.OnClickListener() {
@@ -371,4 +391,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == GET_GALLERY_IMAGE) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                try {
+                    // 선택한 이미지에서 비트맵 생성
+                    InputStream in = getContentResolver().openInputStream(data.getData());
+                    Bitmap img = BitmapFactory.decodeStream(in);
+                    in.close();
+                    // 이미지 표시
+                    myBodyImage.setImageBitmap(img);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
 }
+
