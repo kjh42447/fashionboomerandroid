@@ -3,6 +3,7 @@ package com.capstone.fashionboomerandroid.retrofit;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.Streaming;
@@ -27,6 +28,22 @@ public interface RetrofitInterface {
     @Streaming
     Call<DataModel.PageData> getMemberClosets(
             @Path("member_id") int memberId,
+            @Query("page") int page,
+            @Query("size") int size);
+
+//    @POST("/v11/posts")
+//    @Streaming
+//    Call<DataModel.Data> getPost(
+//            @Path("post_id") int postId);
+
+    @GET("/v11/posts/{post_id}")
+    @Streaming
+    Call<DataModel.Data> getPost(
+            @Path("post_id") int postId);
+
+    @GET("/v11/posts")
+    @Streaming
+    Call<DataModel.PostPageData> getPosts(
             @Query("page") int page,
             @Query("size") int size);
 }

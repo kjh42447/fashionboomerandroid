@@ -15,6 +15,11 @@ public class DataModel {
         @SerializedName("pageInfo")
         private PageInfo pageInfo;
 
+        public PostPageData() {
+            this.data = new ArrayList<>();
+            this.pageInfo = new PageInfo();
+        }
+
         public PostPageData(PostPageData postPageData) {
             this.data = new ArrayList<>();
             for (Post post : postPageData.getData()) {
@@ -278,6 +283,13 @@ public class DataModel {
 
         @SerializedName("totalPages")
         private int totalPages;
+
+        public PageInfo() {
+            this.page = 0;
+            this.size = 0;
+            this.totalElements = 0;
+            this.totalPages = 0;
+        }
 
         public PageInfo(int page, int size, int totalElements, int totalPages) {
             this.page = page;

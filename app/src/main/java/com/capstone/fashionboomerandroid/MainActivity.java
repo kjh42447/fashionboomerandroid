@@ -51,21 +51,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final int GET_GALLERY_IMAGE = 200;
 
     private DataModel.PageData closets;
-    private List<MatrixImage> matrixImages = new ArrayList<>();
-    private List<ImageView> myImageViews = new ArrayList<>();
-    private List<MatrixImage> myNukkiImageViews = new ArrayList<>();
-    private List<ImageView> likeImageViews = new ArrayList<>();
-    private List<MatrixImage> likeNukkiImageViews = new ArrayList<>();
+    private final List<MatrixImage> matrixImages = new ArrayList<>();
+    private final List<ImageView> myImageViews = new ArrayList<>();
+    private final List<MatrixImage> myNukkiImageViews = new ArrayList<>();
+    private final List<ImageView> likeImageViews = new ArrayList<>();
+    private final List<MatrixImage> likeNukkiImageViews = new ArrayList<>();
     private ImageView maleImage;
     private ImageView femaleImage;
     private ImageView myBodyImage;
-
-    private Button button1;
-    private Button maleButton;
-    private Button femaleButton;
-    private Button myBodyButton;
-    private Button myClosetButton;
-    private Button likeClosetButton;
 
     private ConstraintLayout closetNukkiLayout;
     private LinearLayout likeClosetLayout;
@@ -73,8 +66,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private static final String BASE_URL = "http://fashionboomer.tk:8080";
     // AbsolutePath : /storage/emulated/0/
-    private String rawPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/FashionBoomer/raw";
-    private String nukkiPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/FashionBoomer/nukki";
+    private final String rawPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/FashionBoomer/raw";
+    private final String nukkiPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/FashionBoomer/nukki";
 
     private MatrixImage recentlyImage;
 
@@ -91,12 +84,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         femaleImage = (ImageView) findViewById(R.id.femaleImage);
         myBodyImage = (ImageView) findViewById(R.id.myBodyImage);
 
-        button1 = (Button) findViewById(R.id.button1);
-        maleButton = (Button) findViewById(R.id.maleButton);
-        femaleButton = (Button) findViewById(R.id.femaleButton);
-        myBodyButton = (Button) findViewById(R.id.myBodyButton);
-        myClosetButton = (Button) findViewById(R.id.myClosetButton);
-        likeClosetButton = (Button) findViewById(R.id.likeClosetButton);
+        Button button1 = (Button) findViewById(R.id.button1);
+        Button maleButton = (Button) findViewById(R.id.maleButton);
+        Button femaleButton = (Button) findViewById(R.id.femaleButton);
+        Button myBodyButton = (Button) findViewById(R.id.myBodyButton);
+        Button myClosetButton = (Button) findViewById(R.id.myClosetButton);
+        Button likeClosetButton = (Button) findViewById(R.id.likeClosetButton);
 
         closetNukkiLayout = (ConstraintLayout) findViewById(R.id.closetNukkiLayout);
         myClosetLayout = (LinearLayout) findViewById(R.id.myClosetLayout);
@@ -112,15 +105,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         myClosetLayout.setVisibility(View.VISIBLE);
         likeClosetLayout.setVisibility(View.GONE);
 
-        retrofitInterfaces.getMemberClosets(memberId.intValue(), 1, 30).enqueue(new Callback< DataModel.PageData>() {
+        retrofitInterfaces.getMemberClosets(memberId.intValue(), 1, 30).enqueue(new Callback<DataModel.PageData>() {
             @Override
-            public void onResponse(@NonNull Call< DataModel.PageData > call, @NonNull Response< DataModel.PageData > response) {
+            public void onResponse(@NonNull Call<DataModel.PageData> call, @NonNull Response<DataModel.PageData> response) {
 //                myToast.show();
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     Log.d("getMemberClosets", "getMemberClosets");
                     closets = new DataModel.PageData(response.body());
 
-                    for(int i = 0; i < closets.getData().size(); i++) {
+                    for (int i = 0; i < closets.getData().size(); i++) {
                         // 누끼 이미지 뷰
                         likeNukkiImageViews.add(new MatrixImage());
 
@@ -130,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         likeNukkiImageViews.get(i).setImageView(new ImageView(getBaseContext()));
                         likeNukkiImageViews.get(i).getImageView().setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1600));
                         Glide.with(mainActivity).load(BASE_URL + "/v11/closets/images/nukki/" + closets.getData().get(i).getId()).into(likeNukkiImageViews.get(i).getImageView());
-                        
+
                         // 누끼 이미지 터치 이벤트
                         likeNukkiImageViews.get(i).getImageView().setOnTouchListener(onTouch);
                         likeNukkiImageViews.get(i).getImageView().setScaleType(ImageView.ScaleType.MATRIX); // 스케일 타입을 매트릭스로 해줘야 움직인다.
@@ -144,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         // 일반 이미지 뷰
                         // 좋아요 누를때 보임
                         likeClosetLayout.setVisibility(View.GONE);
-                        
+
                         likeImageViews.add(new ImageView(getBaseContext()));
                         likeImageViews.get(i).setLayoutParams(new ViewGroup.LayoutParams(400, 400));
                         Glide.with(mainActivity).load(BASE_URL + "/v11/closets/images/" + closets.getData().get(i).getId()).into(likeImageViews.get(i));
@@ -180,7 +173,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                recentlyImage.getImageView().setVisibility(View.GONE);
+                // 임시로 액티비 이동 버튼으로 사용
+//                recentlyImage.getImageView().setVisibility(View.GONE);
+                Intent intent = new Intent(mainActivity, PostActivity.class);
+                startActivity(intent);
             }
         });
         maleButton.setOnClickListener(new View.OnClickListener() {
@@ -227,13 +223,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         // permission
-        ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, MODE_PRIVATE);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MODE_PRIVATE);
 
         // 내 옷 이미지 목록 뷰, 이벤트
         List<String> rawImageNames = getFileNameList(rawPath);
         List<String> nukkiImageNames = getFileNameList(nukkiPath);
 
-        for(int i = 0; i < rawImageNames.size(); i++) {
+        for (int i = 0; i < rawImageNames.size(); i++) {
             // 누끼 이미지 뷰
             myNukkiImageViews.add(new MatrixImage());
 
@@ -289,7 +285,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         List<String> filesNameList = new ArrayList<>();
 
-        for (int i=0; i< files.length; i++) {
+        for (int i = 0; i < files.length; i++) {
             filesNameList.add(files[i].getName());
         }
 
@@ -394,6 +390,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check which request we're responding to
+        super.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == GET_GALLERY_IMAGE) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
