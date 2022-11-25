@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/post_id"
+        android:text="Post_Id"
+        android:textSize="20sp"
+        android:maxLines="1"
+        android:ellipsize="end"/>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/postLayout">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/post_title"
+            android:text="Title"
+            android:textSize="20sp"
+            android:maxLines="1"
+            android:ellipsize="end"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/post_content"
+            android:text="Contents"
+            android:textSize="20sp"
+            android:maxLines="2"
+            android:ellipsize="end"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/detailLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/user_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="user_name"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/post_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="View"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/post_like_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="like"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/post_dislike_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="dislike"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/post_comment_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="comment"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+</RelativeLayout>

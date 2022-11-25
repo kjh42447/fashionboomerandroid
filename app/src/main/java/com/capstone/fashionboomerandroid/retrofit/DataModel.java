@@ -8,6 +8,177 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataModel {
+    public static class PostPageData {
+        @SerializedName("data")
+        private List<Post> data;
+
+        @SerializedName("pageInfo")
+        private PageInfo pageInfo;
+
+        public PostPageData(PostPageData postPageData) {
+            this.data = new ArrayList<>();
+            for (Post post : postPageData.getData()) {
+                this.data.add(new Post(post));
+            }
+
+            this.pageInfo = new PageInfo(postPageData.getPageInfo().page, postPageData.getPageInfo().size, postPageData.getPageInfo().totalElements, postPageData.getPageInfo().totalPages);
+        }
+
+        public List<Post> getData() {
+            return data;
+        }
+
+        public PageInfo getPageInfo() {
+            return pageInfo;
+        }
+
+        public void setData(List<Post> data) {
+            this.data = data;
+        }
+
+        public void setPageInfo(PageInfo pageInfo) {
+            this.pageInfo = pageInfo;
+        }
+    }
+
+    public static class Post {
+        @SerializedName("id")
+        private int id;
+
+        @SerializedName("parentId")
+        private int parentId;
+
+        @SerializedName("post_title")
+        private String post_title;
+
+        @SerializedName("post_content")
+        private String post_content;
+
+        @SerializedName("user_id")
+        private Long user_id;
+
+        @SerializedName("post_view")
+        private int post_view;
+
+        @SerializedName("post_like_count")
+        private int post_like_count;
+
+        @SerializedName("post_dislike_count")
+        private int post_dislike_count;
+
+        @SerializedName("post_answer_count")
+        private int post_answer_count;
+
+        @SerializedName("post_comment_count")
+        private int post_comment_count;
+
+        public Post(int id, int parentId, String post_title, String post_content, Long user_id, int post_view, int post_like_count, int post_dislike_count, int post_answer_count, int post_comment_count) {
+            this.id = id;
+            this.parentId = parentId;
+            this.post_title = post_title;
+            this.post_content = post_content;
+            this.user_id = user_id;
+            this.post_view = post_view;
+            this.post_like_count = post_like_count;
+            this.post_dislike_count = post_dislike_count;
+            this.post_answer_count = post_answer_count;
+            this.post_comment_count = post_comment_count;
+        }
+
+        public Post(Post post) {
+            this.id = post.getId();
+            this.parentId = post.getParentId();
+            this.post_title = post.getPost_title();
+            this.post_content = post.getPost_content();
+            this.user_id = post.getUser_id();
+            this.post_view = post.getPost_view();
+            this.post_like_count = post.getPost_like_count();
+            this.post_dislike_count = post.getPost_dislike_count();
+            this.post_answer_count = post.getPost_answer_count();
+            this.post_comment_count = post.getPost_comment_count();
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public int getParentId() {
+            return parentId;
+        }
+
+        public String getPost_title() {
+            return post_title;
+        }
+
+        public String getPost_content() {
+            return post_content;
+        }
+
+        public Long getUser_id() {
+            return user_id;
+        }
+
+        public int getPost_view() {
+            return post_view;
+        }
+
+        public int getPost_like_count() {
+            return post_like_count;
+        }
+
+        public int getPost_dislike_count() {
+            return post_dislike_count;
+        }
+
+        public int getPost_answer_count() {
+            return post_answer_count;
+        }
+
+        public int getPost_comment_count() {
+            return post_comment_count;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public void setParentId(int parentId) {
+            this.parentId = parentId;
+        }
+
+        public void setPost_title(String post_title) {
+            this.post_title = post_title;
+        }
+
+        public void setPost_content(String post_content) {
+            this.post_content = post_content;
+        }
+
+        public void setUser_id(Long user_id) {
+            this.user_id = user_id;
+        }
+
+        public void setPost_view(int post_view) {
+            this.post_view = post_view;
+        }
+
+        public void setPost_like_count(int post_like_count) {
+            this.post_like_count = post_like_count;
+        }
+
+        public void setPost_dislike_count(int post_dislike_count) {
+            this.post_dislike_count = post_dislike_count;
+        }
+
+        public void setPost_answer_count(int post_answer_count) {
+            this.post_answer_count = post_answer_count;
+        }
+
+        public void setPost_comment_count(int post_comment_count) {
+            this.post_comment_count = post_comment_count;
+        }
+    }
+
     public static class PageData {
         @SerializedName("data")
         private List<Closet> data;
@@ -41,15 +212,15 @@ public class DataModel {
         }
     }
 
-    public static class Data {
+    public static class Data<T> {
         @SerializedName("data")
-        private Closet data;
+        private T data;
 
-        public Closet getData() {
+        public T getData() {
             return data;
         }
 
-        public void setData(Closet data) {
+        public void setData(T data) {
             this.data = data;
         }
     }
