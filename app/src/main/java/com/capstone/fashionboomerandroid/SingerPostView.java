@@ -19,7 +19,7 @@ public class SingerPostView extends RelativeLayout {
     public SingerPostView(Context context) {
         super(context);
 
-
+        init(context);
     }
 
     private void init(Context context) {
@@ -36,35 +36,35 @@ public class SingerPostView extends RelativeLayout {
         post_comment_count = (TextView) findViewById(R.id.post_comment_count);
     }
 
-    public void setPost_id(TextView post_id) {
-        this.post_id = post_id;
+    public void setPost_id(int postId) {
+        post_id.setText(postId);
     }
 
-    public void setPost_title(TextView post_title) {
-        this.post_title = post_title;
+    public void setPost_title(String postTitle) {
+        post_title.setText(postTitle);
     }
 
-    public void setPost_content(TextView post_content) {
-        this.post_content = post_content;
+    public void setPost_content(String postContent) {
+        post_content.setText(postContent);
     }
 
-    public void setUser_id(TextView user_id) {
-        this.user_id = user_id;
+    public void setUser_id(Long userId) {
+        user_id.setText(userId.toString());
     }
 
-    public void setPost_view(TextView post_view) {
-        this.post_view = post_view;
+    public void setPost_view(int postView) {
+        post_view.setText(postView);
     }
 
-    public void setPost_like_count(TextView post_like_count) {
-        this.post_like_count = post_like_count;
+    public void setPost_like_count(int postLikeCount) {
+        post_like_count.setText(postLikeCount);
     }
 
-    public void setPost_dislike_count(TextView post_dislike_count) {
-        this.post_dislike_count = post_dislike_count;
+    public void setPost_dislike_count(int postDislikeCount) {
+        post_dislike_count.setText(postDislikeCount);
     }
 
-    public void setPost_comment_count(TextView post_comment_count) {
-        this.post_comment_count = post_comment_count;
+    public void setPost_comment_count(int postCommentCount) {
+        post_comment_count.setText(postCommentCount);
     }
 }

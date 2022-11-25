@@ -81,22 +81,25 @@ public class PostActivity extends AppCompatActivity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             // 뷰 객체 재사용
-//            SingerItemView view = null;
-//            if (convertView == null) {
-//                view = new SingerItemView(getApplicationContext());
-//            } else {
-//                view = (SingerItemView) convertView;
-//            }
-//
-//            DataModel.Post item = items.get(position);
-//
-//            view.setName(item.getName());
-//            view.setMobile(item.getMobile());
-//            view.setImage(item.getResId());
-//
-//
-//            return view;
-            return null;
+            SingerPostView view = null;
+            if (convertView == null) {
+                view = new SingerPostView(getApplicationContext());
+            } else {
+                view = (SingerPostView) convertView;
+            }
+
+            DataModel.Post item = items.get(position);
+
+            view.setPost_id(item.getId());
+            view.setPost_title(item.getPost_title());
+            view.setPost_content(item.getPost_content());
+            view.setUser_id(item.getUser_id());
+            view.setPost_view(item.getPost_view());
+            view.setPost_like_count(item.getPost_like_count());
+            view.setPost_dislike_count(item.getPost_dislike_count());
+            view.setPost_comment_count(item.getPost_comment_count());
+
+            return view;
         }
     }
 
