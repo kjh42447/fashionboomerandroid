@@ -24,7 +24,10 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class PostActivity extends AppCompatActivity {
-    private DataModel.PostPageData postPageData;
+
+    private final PostActivity postActivity = this;
+
+    public DataModel.PostPageData postPageData;
     private DataModel.Post post;
     private static final String BASE_URL = "http://fashionboomer.tk:8080";
     private SingerAdapter adapter;
@@ -68,8 +71,9 @@ public class PostActivity extends AppCompatActivity {
                             public void onResponse(Call<DataModel.Data> call, Response<DataModel.Data> response) {
                                 // 게시글 정보 받고 이동
                                 if(response.isSuccessful()) {
-                                    postPageData.getData().get(i);  // 일단 이거 사용
-                                    Intent intent = new Intent( );
+                                    post = postPageData.getData().get(i);  // 일단 이거 사용
+                                    Intent intent = new Intent(postActivity, PostDetailActivity.class);
+                                    intent.putExtra("Post", post);
                                     startActivity(intent);
                                 }
                             }

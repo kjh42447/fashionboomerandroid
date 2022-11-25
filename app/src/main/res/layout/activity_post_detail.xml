@@ -8,11 +8,12 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/postDetailContentsLayout"
             android:orientation="vertical"
             android:layout_margin="10dp"
@@ -20,30 +21,32 @@
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:text="Title"
                 android:textSize="30dp"
                 android:id="@+id/detailTitle"/>
+
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="40dp">
 
                 <TextView
+                    android:id="@+id/detailUserName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="username"
-                    android:textSize="15dp"
-                    android:id="@+id/detailUserName"
                     android:layout_alignParentTop="true"
-                    android:layout_alignParentRight="true"/>
+                    android:layout_alignParentRight="true"
+                    android:text="username"
+                    android:textSize="15dp" />
+
                 <TextView
+                    android:id="@+id/detailCreatedAt"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="createdAt"
-                    android:textSize="15dp"
-                    android:id="@+id/detailCreatedAt"
+                    android:layout_below="@id/detailUserName"
                     android:layout_alignParentRight="true"
-                    android:layout_below="@id/detailUserName"/>
+                    android:text="createdAt"
+                    android:textSize="15dp" />
 
             </RelativeLayout>
 
@@ -53,19 +56,20 @@
                 android:id="@+id/detailContents"
                 android:text="Contents"
                 android:textSize="20dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"/>
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/detailLikeLayout"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginBottom="20dp">
 
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="좋아요"
+                    android:text="좋아요\n0"
                     android:background="@color/white"
                     android:minHeight="40dp"
                     android:minWidth="60dp"
@@ -74,7 +78,7 @@
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="싫어요"
+                    android:text="싫어요\n0"
                     android:background="@color/white"
                     android:minHeight="40dp"
                     android:minWidth="60dp"
@@ -83,9 +87,15 @@
 
             </LinearLayout>
 
+            <ListView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/commentListView">
 
+            </ListView>
 
         </LinearLayout>
+
 
     </ScrollView>
 

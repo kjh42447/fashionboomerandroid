@@ -4,10 +4,133 @@ package com.capstone.fashionboomerandroid.retrofit;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DataModel {
+    public static class PageCommentData {
+        @SerializedName("data")
+        private List<Comment> data;
+
+        @SerializedName("pageInfo")
+        private PageInfo pageInfo;
+
+        public PageCommentData() {
+            this.data = new ArrayList<>();
+            this.pageInfo = new PageInfo();
+        }
+
+        public PageCommentData(PageCommentData pageCommentData) {
+            this.data = new ArrayList<>();
+            for (Comment comment : pageCommentData.getData()) {
+                this.data.add(new Comment(comment));
+            }
+
+            this.pageInfo = new PageInfo(pageCommentData.getPageInfo().page, pageCommentData.getPageInfo().size, pageCommentData.getPageInfo().totalElements, pageCommentData.getPageInfo().totalPages);
+        }
+
+        public void setData(List<Comment> data) {
+            this.data = data;
+        }
+
+        public void setPageInfo(PageInfo pageInfo) {
+            this.pageInfo = pageInfo;
+        }
+
+        public List<Comment> getData() {
+            return data;
+        }
+
+        public PageInfo getPageInfo() {
+            return pageInfo;
+        }
+    }
+    public static class Comment {
+        @SerializedName("id")
+        private int id;
+
+        @SerializedName("user_id")
+        private int user_id;
+
+        @SerializedName("post_id")
+        private int post_id;
+
+        @SerializedName("comment")
+        private String comment;
+
+        @SerializedName("user_name")
+        private String user_name;
+
+        @SerializedName("created_at")
+        private String created_at;
+
+        public Comment(Comment comment) {
+            this.id = comment.getId();
+            this.user_id = comment.getUser_id();
+            this.post_id = comment.getPost_id();
+            this.comment = comment.getComment();
+            this.user_name = comment.getUser_name();
+            this.created_at = comment.getCreated_at();
+        }
+
+        public Comment(int id, int user_id, int post_id, String comment, String user_name, String created_at) {
+            this.id = id;
+            this.user_id = user_id;
+            this.post_id = post_id;
+            this.comment = comment;
+            this.user_name = user_name;
+            this.created_at = created_at;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public void setUser_id(int user_id) {
+            this.user_id = user_id;
+        }
+
+        public void setPost_id(int post_id) {
+            this.post_id = post_id;
+        }
+
+        public void setComment(String comment) {
+            this.comment = comment;
+        }
+
+        public void setUser_name(String user_name) {
+            this.user_name = user_name;
+        }
+
+        public void setCreated_at(String created_at) {
+            this.created_at = created_at;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public int getUser_id() {
+            return user_id;
+        }
+
+        public int getPost_id() {
+            return post_id;
+        }
+
+        public String getComment() {
+            return comment;
+        }
+
+        public String getUser_name() {
+            return user_name;
+        }
+
+        public String getCreated_at() {
+            return created_at;
+        }
+    }
     public static class PostPageData {
         @SerializedName("data")
         private List<Post> data;
@@ -46,7 +169,7 @@ public class DataModel {
         }
     }
 
-    public static class Post {
+    public static class Post implements Serializable {
         @SerializedName("id")
         private int id;
 

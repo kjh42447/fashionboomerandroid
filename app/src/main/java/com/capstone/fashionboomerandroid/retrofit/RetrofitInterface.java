@@ -46,4 +46,11 @@ public interface RetrofitInterface {
     Call<DataModel.PostPageData> getPosts(
             @Query("page") int page,
             @Query("size") int size);
+
+    @GET("/v11/comments/posts/{post_id}")
+    @Streaming
+    Call<DataModel.PageCommentData> getComments(
+            @Path("post_id") int postId,
+            @Query("page") int page,
+            @Query("size") int size);
 }
