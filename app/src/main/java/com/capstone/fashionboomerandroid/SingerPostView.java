@@ -1,6 +1,7 @@
 package com.capstone.fashionboomerandroid;
 
 import android.content.Context;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -22,6 +23,12 @@ public class SingerPostView extends RelativeLayout {
         init(context);
     }
 
+    public SingerPostView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+
+        init(context);
+    }
+
     private void init(Context context) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.post, this, true);
@@ -37,7 +44,7 @@ public class SingerPostView extends RelativeLayout {
     }
 
     public void setPost_id(int postId) {
-        post_id.setText(postId);
+        post_id.setText(Integer.toString(postId));
     }
 
     public void setPost_title(String postTitle) {
@@ -48,23 +55,23 @@ public class SingerPostView extends RelativeLayout {
         post_content.setText(postContent);
     }
 
-    public void setUser_id(Long userId) {
-        user_id.setText(userId.toString());
+    public void setUser_id(String userName) {
+        user_id.setText(userName);
     }
 
     public void setPost_view(int postView) {
-        post_view.setText(postView);
+        post_view.setText("조회수 : " + Integer.toString(postView));
     }
 
     public void setPost_like_count(int postLikeCount) {
-        post_like_count.setText(postLikeCount);
+        post_like_count.setText("좋아요 : " + Integer.toString(postLikeCount));
     }
 
     public void setPost_dislike_count(int postDislikeCount) {
-        post_dislike_count.setText(postDislikeCount);
+        post_dislike_count.setText("싫어요 : " + Integer.toString(postDislikeCount));
     }
 
     public void setPost_comment_count(int postCommentCount) {
-        post_comment_count.setText(postCommentCount);
+        post_comment_count.setText("댓글수 : " + Integer.toString(postCommentCount));
     }
 }

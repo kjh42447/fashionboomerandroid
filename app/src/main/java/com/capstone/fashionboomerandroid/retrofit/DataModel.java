@@ -77,7 +77,16 @@ public class DataModel {
         @SerializedName("post_comment_count")
         private int post_comment_count;
 
-        public Post(int id, int parentId, String post_title, String post_content, Long user_id, int post_view, int post_like_count, int post_dislike_count, int post_answer_count, int post_comment_count) {
+        @SerializedName("user_name")
+        private String user_name;
+
+        @SerializedName("created_at")
+        private String created_at;
+
+        @SerializedName("last_modified_at")
+        private String last_modified_at;
+
+        public Post(int id, int parentId, String post_title, String post_content, Long user_id, int post_view, int post_like_count, int post_dislike_count, int post_answer_count, int post_comment_count, String user_name, String created_at, String last_modified_at) {
             this.id = id;
             this.parentId = parentId;
             this.post_title = post_title;
@@ -88,6 +97,9 @@ public class DataModel {
             this.post_dislike_count = post_dislike_count;
             this.post_answer_count = post_answer_count;
             this.post_comment_count = post_comment_count;
+            this.user_name = user_name;
+            this.created_at = created_at;
+            this.last_modified_at = last_modified_at;
         }
 
         public Post(Post post) {
@@ -101,6 +113,33 @@ public class DataModel {
             this.post_dislike_count = post.getPost_dislike_count();
             this.post_answer_count = post.getPost_answer_count();
             this.post_comment_count = post.getPost_comment_count();
+            this.user_name = post.getUser_name();
+            this.created_at = post.getCreated_at();
+            this.last_modified_at = post.getLast_modified_at();
+        }
+
+        public void setUser_name(String user_name) {
+            this.user_name = user_name;
+        }
+
+        public void setCreated_at(String created_at) {
+            this.created_at = created_at;
+        }
+
+        public void setLast_modified_at(String last_modified_at) {
+            this.last_modified_at = last_modified_at;
+        }
+
+        public String getUser_name() {
+            return user_name;
+        }
+
+        public String getCreated_at() {
+            return created_at;
+        }
+
+        public String getLast_modified_at() {
+            return last_modified_at;
         }
 
         public int getId() {
